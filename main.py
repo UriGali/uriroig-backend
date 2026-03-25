@@ -10,7 +10,10 @@ app = FastAPI()
 # Esto permite que tu frontend en React se comunique con este backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Puerto por defecto de Vite/React
+    allow_origins=[
+        "http://localhost:5173", 
+        "https://uriroig-frontend.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
