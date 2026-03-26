@@ -1,3 +1,4 @@
+import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
@@ -50,6 +51,7 @@ init_db()
 @app.post("/contact")
 async def receive_contact(form: ContactForm):
     try:
+        # 1. Guardar en SQLite (lo que ya tenías y funciona)
         conn = sqlite3.connect('leads.db')
         cursor = conn.cursor()
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -61,10 +63,27 @@ async def receive_contact(form: ContactForm):
         
         conn.commit()
         conn.close()
+
+        # 2. ENVIAR A n8n (El cable nuevo)
+        n8n_url = "https://n8n-production-4428.up.railway.app/webhook-test/contacto-web"
+        payload = {
+            "nombre": form.name,
+            "email": form.email,
+            "servicio": form.service,
+            "mensaje": form.message,
+            "fecha": now
+        }
         
+        # Intentamos enviar a n8n, pero si falla n8n que no se rompa la web
+        try:
+            requests.post(n8n_url, json=payload, timeout=5)
+            print(f"✅ Lead enviado a n8n correctamente")
+        except Exception as e_n8n:
+            print(f"⚠️ Error enviando a n8n: {e_n8n}")
+
         print(f"✅ ¡Nuevo lead recibido de {form.name}!")
-        return {"message": "Datos guardados correctamente", "status": "success"}
-    
+        return {"message": "Datos guardados y enviados", "status": "success"}
+
     except Exception as e:
         print(f"❌ Error al guardar: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
