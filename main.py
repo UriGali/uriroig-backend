@@ -65,7 +65,7 @@ async def receive_contact(form: ContactForm):
         conn.close()
 
         # 2. ENVIAR A n8n (El cable nuevo)
-        n8n_url = "https://n8n-production-4428.up.railway.app/webhook/contacto-web"
+        n8n_url = "https://n8n-production-4428.up.railway.app/webhook-test/contacto-web"
         payload = {
             "nombre": form.name,
             "email": form.email,
