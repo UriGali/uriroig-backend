@@ -92,4 +92,4 @@ async def receive_contact(form: ContactForm):
 
 @app.get("/")
 def read_root():
-    return {"status": "Backend de Uri Roig funcionando 🚀"}
+    return {"status": "Backend de Aurum & Heritage funcionando 🚀"}
