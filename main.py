@@ -20,12 +20,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- MODELO DE DATOS ACTUALIZADO ---
+# --- MODELO DE DATOS ACTUALIZADO (Presupuesto opcional para evitar error 422) ---
 class ContactForm(BaseModel):
     name: str
     email: EmailStr
     service: str
-    budget: str  # <-- NUEVO CAMPO
+    budget: str = "No especificado"  # <-- Ahora tiene un valor por defecto
     message: str
 
 # --- BASE DE DATOS ACTUALIZADA ---
